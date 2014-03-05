@@ -13,11 +13,14 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        MainWindow.cpp
+        MainWindow.cpp \
+    DetectiveInput.cpp
 
-HEADERS  += MainWindow.h
+HEADERS  += MainWindow.h \
+    DetectiveInput.h
 
-FORMS    += MainWindow.ui
+FORMS    += MainWindow.ui \
+    DetectiveInput.ui
 
 RESOURCES += \
     resources.qrc

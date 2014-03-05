@@ -99,9 +99,13 @@ void MainWindow::on_calculateButton_clicked()
             tickets.enqueue(stub.trimmed());
     }
 
-    while (!tickets.isEmpty())
+    const int ticketCount = tickets.size();
+
+    for (int i = 0; i < ticketCount; i++)
     {
         const QString ticket = tickets.dequeue();
+
+        const QSet<int> detectivePositions = _detectiveInputs[i]->detectivePositions();
 
         //We'll calculate a new frontier
         QMap<QString, int> newFrontier;
@@ -115,6 +119,9 @@ void MainWindow::on_calculateButton_clicked()
                 connections.unite(this->getConnections(frontierNode, "bus"));
                 connections.unite(this->getConnections(frontierNode, "train"));
             }
+
+            foreach(int detectivePos, detectivePositions)
+                connections.remove(QString::number(detectivePos));
 
             foreach(const QString& conn, connections)
             {
@@ -181,6 +188,30 @@ void MainWindow::updateGUIState()
         validTicket = (ui->ticketEntry->validator()->validate(tempString, tempInt) == QValidator::Acceptable);
     }
     ui->calculateButton->setEnabled(validTicket && !ui->lastLocationEntry->text().isEmpty());
+
+    if ( validTicket || ui->ticketEntry->text().isEmpty())
+    {
+        QStringList stubs = ui->ticketEntry->text().split(",");
+
+        if (stubs.size() <= _detectiveInputs.size())
+        {
+            foreach(DetectiveInput * detIn, _detectiveInputs)
+                detIn->deleteLater();
+            _detectiveInputs.clear();
+        }
+
+
+        for (int i = _detectiveInputs.size(); i < stubs.size(); i++)
+        {
+            const QString& stub = stubs[i];
+            if (stub.isEmpty())
+                continue;
+
+            DetectiveInput * newOne = new DetectiveInput(i+1, stub);
+            _detectiveInputs.append(newOne);
+            ui->verticalLayout->addWidget(newOne);
+        }
+    }
 }
 
 //private

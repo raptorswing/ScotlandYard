@@ -5,6 +5,8 @@
 #include <QJsonObject>
 #include <QSet>
 
+#include "DetectiveInput.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -40,6 +42,8 @@ private:
     void appendTicket(const QString& type);
     void initializeGraph();
     QSet<QString> getConnections(const QString& node, const QString& ticketType);
+
+    QList<DetectiveInput *> _detectiveInputs;
 
     Ui::MainWindow *ui;
 
